@@ -93,6 +93,8 @@ public class Return_tug extends Thread {
 			}
 			vessel.setOutbound(true);
 			lock.enter(vessel);
+
+			System.out.println(vessel + " returns to lock to go down.");
 			signalled = false;
 
 		}

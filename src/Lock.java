@@ -29,30 +29,63 @@ public class Lock {
 		this.vessel = null;
 	}
 
+	/**
+	 * Checks if is drain.
+	 *
+	 * @return true, if is drain
+	 */
 	public synchronized boolean isDrain() {
 		return drain;
 	}
 
+	/**
+	 * Sets the drain.
+	 *
+	 * @param drain the new drain
+	 */
 	public void setDrain(boolean drain) {
 		this.drain = drain;
 	}
 
+	/**
+	 * Checks if is occupied.
+	 *
+	 * @return true, if is occupied
+	 */
 	public synchronized boolean isOccupied() {
 		return occupied;
 	}
 
+	/**
+	 * Sets the occupied.
+	 *
+	 * @param occupied the new occupied
+	 */
 	public synchronized void setOccupied(boolean occupied) {
 		this.occupied = occupied;
 	}
 
+	/**
+	 * Gets the vessel.
+	 *
+	 * @return the vessel
+	 */
 	public synchronized Vessel getVessel() {
 		return vessel;
 	}
 
+	/**
+	 * Sets the vessel.
+	 *
+	 * @param vessel the new vessel
+	 */
 	public synchronized void setVessel(Vessel vessel) {
 		this.vessel = vessel;
 	}
 
+	/**
+	 * Operate water level.
+	 */
 	public synchronized void operateWaterLevel() {
 		if (this.vessel != null) {
 			try {
@@ -69,14 +102,22 @@ public class Lock {
 		}
 	}
 
+	/**
+	 * Enter.
+	 *
+	 * @param vessel the vessel
+	 */
 	public synchronized void enter(Vessel vessel) {
 		this.setOccupied(Param.OCCUPIED);
 		this.setVessel(vessel);
-		System.out.println(vessel.toString()
-				+ " enter Lock to go down");
 
 	}
 
+	/**
+	 * Leave.
+	 *
+	 * @return the vessel
+	 */
 	public synchronized Vessel leave() {
 		Vessel vessel = null;
 		try {
@@ -84,7 +125,6 @@ public class Lock {
 			this.setOccupied(Param.UNOCCUPIED);
 			this.setVessel(null);
 
-			System.out.println(vessel.toString() + " leaves lock ");
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

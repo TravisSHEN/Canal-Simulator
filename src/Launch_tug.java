@@ -7,6 +7,7 @@ public class Launch_tug extends Thread {
 	/** The lock. */
 	private Lock lock;
 
+	/** The canal monitor. */
 	private CanalMonitor canalMonitor;
 
 	/** The launch section. */
@@ -14,11 +15,10 @@ public class Launch_tug extends Thread {
 
 	/**
 	 * Instantiates a new launch_tug.
-	 * 
-	 * @param lock
-	 *            the lock
-	 * @param launchSection
-	 *            the launch section
+	 *
+	 * @param canalMonitor the canal monitor
+	 * @param lock            the lock
+	 * @param launchSection            the launch section
 	 */
 	public Launch_tug(CanalMonitor canalMonitor, Lock lock,
 			Section launchSection) {
@@ -42,6 +42,9 @@ public class Launch_tug extends Thread {
 
 	}
 
+	/**
+	 * Launch.
+	 */
 	public void launch() {
 
 		synchronized (canalMonitor) {
@@ -60,6 +63,7 @@ public class Launch_tug extends Thread {
 			if (!launchSection.isOccupied()) {
 
 				Vessel temp = lock.leave();
+				System.out.println(temp + " leaves lock.");
 				canalMonitor.notifyAll();
 
 				try {

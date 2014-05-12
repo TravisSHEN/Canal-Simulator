@@ -50,7 +50,9 @@ public class Param {
 
   public static int arrivalLapse() {
     Random random = new Random();
-    return random.nextInt(MAX_ARRIVE_INTERVAL);
+    int r = random.nextInt(MAX_ARRIVE_INTERVAL);
+    double prob = 1 - Math.exp(-(1 / 1200.0) * r);
+    return (int) (prob * MAX_ARRIVE_INTERVAL);
   }
 
   /**
@@ -60,7 +62,9 @@ public class Param {
    */
   public static int departureLapse() {
     Random random = new Random();
-    return random.nextInt(MAX_DEPART_INTERVAL);
+    int r = random.nextInt(MAX_DEPART_INTERVAL);
+    double prob = 1 - Math.exp(-(1 / 1200.0) * r);
+    return (int) (prob * MAX_DEPART_INTERVAL);
   }
 
   /**

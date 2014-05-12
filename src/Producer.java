@@ -60,7 +60,6 @@ public class Producer extends Thread {
 				}
 
 				lock.count.getAndIncrement();
-				// System.out.println("WATER LEVEL: " + lock.isDrain());
 				lock.enter(temp);
 				lock.operateWaterLevel();
 				System.out.println("Number " + lock.count.get() + " vessel "
