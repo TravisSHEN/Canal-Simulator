@@ -26,77 +26,63 @@ public class Section {
 		this.vessel = null;
 	}
 
+	public synchronized void printOutConditions() {
+        System.out.println("==================== Condition in Section "
+                + this.getId() + " ====================");
+        System.out.println("Section ID        : " + this.getId());
+        System.out.println("Occupied          : " + this.isOccupied());
+        System.out.println("Occupied by Vessel: " + vessel);
+        System.out.println("==================== END ====================");
+	}
 	/**
-	 * Checks if is occupied.
+	 * Enter.
 	 * 
-	 * @return true, if is occupied
+	 * @param vessel
+	 *            the vessel
 	 */
-	public synchronized boolean isOccupied() {
-		// System.out.println(this.id + " is " + (this.occupied?"occupied":
-		// "empty"));
-		return occupied;
+	public synchronized void enter(Vessel vessel) {
+
+		this.setOccupied(Param.OCCUPIED);
+		this.setVessel(vessel);
+		System.out.println(vessel + " enters section " + this.getId());
+		this.notifyAll();
 	}
 
 	/**
-	 * Sets the occupied.
+	 * Leave.
 	 * 
-	 * @param occupied
-	 *            the new occupied
+	 * @return the vessel
 	 */
+	public synchronized Vessel leave() {
+
+		Vessel vessel = (Vessel) this.getVessel().clone();
+		this.setOccupied(Param.UNOCCUPIED);
+		this.setVessel(null);
+
+		System.out.println(vessel + " leaves section " + this.getId());
+		this.notifyAll();
+
+		return vessel;
+	}
+
+	public boolean isOccupied() {
+		return occupied;
+	}
+
 	public synchronized void setOccupied(boolean occupied) {
 		this.occupied = occupied;
 	}
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public synchronized int getId() {
-		return id;
-	}
-
-	/**
-	 * Gets the vessel.
-	 * 
-	 * @return the vessel
-	 */
-	public synchronized Vessel getVessel() {
+	public Vessel getVessel() {
 		return vessel;
 	}
 
-	/**
-	 * Sets the vessel.
-	 * 
-	 * @param vessel
-	 *            the new vessel
-	 */
 	public synchronized void setVessel(Vessel vessel) {
 		this.vessel = vessel;
 	}
 
-	public synchronized void enter(Vessel vessel) {
-		this.setOccupied(Param.OCCUPIED);
-		this.setVessel(vessel);
-		System.out.println(vessel + " enters " + "section " + this.getId());
-	}
-
-	public synchronized Vessel leave() {
-		Vessel vessel = null;
-
-		try {
-			vessel = (Vessel) this.getVessel().clone();
-			this.setOccupied(Param.UNOCCUPIED);
-			this.setVessel(null);
-
-			System.out.println(vessel + " leaves section "
-					+ this.getId());
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return vessel;
+	public int getId() {
+		return id;
 	}
 
 }

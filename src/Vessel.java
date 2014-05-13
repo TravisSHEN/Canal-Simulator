@@ -20,27 +20,37 @@ public class Vessel extends Object implements Cloneable {
 	// create a new vessel with a given Id
 	/**
 	 * Instantiates a new vessel.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 */
 	protected Vessel(int id) {
 		this.id = id;
 		this.outbound = false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	protected Object clone() {
+		Object obj = null;
+		try {
+			obj = super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
 
 	}
 
 	// get a new Vessel instance with a unique Id
 	/**
 	 * Gets the new vessel.
-	 *
+	 * 
 	 * @return the new vessel
 	 */
 	public static Vessel getNewVessel() {
@@ -50,7 +60,7 @@ public class Vessel extends Object implements Cloneable {
 	// produce the Id of this vessel
 	/**
 	 * Gets the id.
-	 *
+	 * 
 	 * @return the id
 	 */
 	public synchronized int getId() {
@@ -58,7 +68,9 @@ public class Vessel extends Object implements Cloneable {
 	}
 
 	// produce an identifying string for the vessel
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public synchronized String toString() {
@@ -67,7 +79,7 @@ public class Vessel extends Object implements Cloneable {
 
 	/**
 	 * Checks if is outbound.
-	 *
+	 * 
 	 * @return true, if is outbound
 	 */
 	public synchronized boolean isOutbound() {
@@ -76,8 +88,9 @@ public class Vessel extends Object implements Cloneable {
 
 	/**
 	 * Sets the outbound.
-	 *
-	 * @param outbound the new outbound
+	 * 
+	 * @param outbound
+	 *            the new outbound
 	 */
 	public synchronized void setOutbound(boolean outbound) {
 		this.outbound = outbound;

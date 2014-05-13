@@ -6,18 +6,17 @@ public class Producer extends Thread {
 
 	/** The lock. */
 	private Lock lock;
-	private CanalMonitor canalMonitor;
+	
 
 	/**
 	 * Instantiates a new producer.
-	 * 
-	 * @param lock
-	 *            the lock
+	 *
+	 * @param canalMonitor the canal monitor
+	 * @param lock            the lock
 	 */
-	public Producer(CanalMonitor canalMonitor, Lock lock) {
+	public Producer(Lock lock) {
 		// TODO Auto-generated constructor stub
-
-		this.canalMonitor = canalMonitor;
+		this.lock = lock;
 	}
 
 	/*
@@ -32,17 +31,19 @@ public class Producer extends Thread {
 		}
 	}
 
+	/**
+	 * Produce vessel.
+	 */
 	public void produceVessel() {
-		synchronized (canalMonitor) {
+		synchronized (lock) {
 
-			// System.out.println("Produce Vessel: "
-			// + (this.occupied ? "occupied " : "not occupied ")
-			// + (this.drain ? "drains " : "fills"));
+//			 System.out.println("Produce Vessel: "
+//			 + (lock.getVessel() != null ? "occupied " : "not occupied ")
+//			 + (lock.isDrain() ? "drains " : "fills"));
 
-			lock = canalMonitor.getLock();
 			while (lock.isOccupied() || lock.count.get() == (Param.SECTIONS)) {
 				try {
-					canalMonitor.wait();
+					lock.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -65,7 +66,7 @@ public class Producer extends Thread {
 				System.out.println("Number " + lock.count.get() + " vessel "
 						+ lock.getVessel().toString() + " enter Lock to go up");
 
-				canalMonitor.notifyAll();
+				lock.notifyAll();
 			}
 		}
 	}

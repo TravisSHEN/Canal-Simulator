@@ -28,25 +28,23 @@ public class Main {
 		}
 		
 		
-		CanalMonitor canalMonitor = new CanalMonitor(lock, sec);
-
 		// generate the producer, the consumer and the operator
-		Producer producer = new Producer(canalMonitor, lock);
-		Consumer consumer = new Consumer(canalMonitor, lock);
-		Operator operator = new Operator(canalMonitor, lock);
+		Producer producer = new Producer(lock);
+		Consumer consumer = new Consumer(lock);
+		Operator operator = new Operator(lock);
 
 		// //create an array sec to hold the tugboats
 		Tug[] tug = new Tug[n - 1];
 
 		// generate the individual tugboats
 		for (int i = 0; i < n - 1; i++) {
-			tug[i] = new Tug(canalMonitor, i, sec[i], sec[i + 1]);
+			tug[i] = new Tug(i, sec[i], sec[i + 1]);
 			tug[i].start();
 		}
 
 		// generate special tugboats that have access to the lock
-		Launch_tug launch_tug = new Launch_tug(canalMonitor, lock, sec[0]);
-		Return_tug return_tug = new Return_tug(canalMonitor, sec[n - 1], lock);
+		Launch_tug launch_tug = new Launch_tug(lock, sec[0]);
+		Return_tug return_tug = new Return_tug(sec[n - 1], lock);
 
 		// start up all the components
 		producer.start();

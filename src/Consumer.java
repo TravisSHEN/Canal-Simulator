@@ -6,18 +6,18 @@ public class Consumer extends Thread {
 
 	/** The lock. */
 	private Lock lock;
-	private CanalMonitor canalMonitor;
 
 	/**
 	 * Instantiates a new consumer.
 	 * 
+	 * @param canalMonitor
+	 *            the canal monitor
 	 * @param lock
 	 *            the lock
 	 */
-	public Consumer(CanalMonitor canalMonitor, Lock lock) {
+	public Consumer(Lock lock) {
 		// TODO Auto-generated constructor stub
-		 this.lock = lock;
-		this.canalMonitor = canalMonitor;
+		this.lock = lock;
 	}
 
 	/*
@@ -29,34 +29,35 @@ public class Consumer extends Thread {
 
 		while (true) {
 			this.depart();
-
 		}
 
 	}
 
+	/**
+	 * Depart.
+	 */
 	public void depart() {
-		synchronized (canalMonitor) {
-//			lock = canalMonitor.getLock();
-			// System.out.println("depart:");
-			while (!lock.isOccupied()
-					|| (lock.isOccupied() && !lock.getVessel().isOutbound())) {
+		synchronized (lock) {
+			while (lock.getVessel() == null
+					|| (lock.getVessel() != null && !lock.getVessel().isOutbound())) {
 				try {
-					canalMonitor.wait();
+					lock.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
-			System.out.println(lock.getVessel()
-					+ " departs the system");
+			// System.out.println(lock.getVessel()
+			// + " departs the system");
 
+			// lock.operateWaterLevel();
+			Vessel temp = lock.leave();
 			lock.operateWaterLevel();
-			lock.leave();
 			lock.count.getAndDecrement();
-			// System.out.println("WATER LEVEL: " + lock.isDrain());
+			System.out.println(temp + " departs the system");
 
-			canalMonitor.notifyAll();
+			lock.notifyAll();
 			try {
 				Thread.sleep(Param.departureLapse());
 				// Thread.currentThread().sleep(100);

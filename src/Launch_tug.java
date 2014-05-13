@@ -7,25 +7,23 @@ public class Launch_tug extends Thread {
 	/** The lock. */
 	private Lock lock;
 
-	/** The canal monitor. */
-	private CanalMonitor canalMonitor;
-
 	/** The launch section. */
 	private Section launchSection;
 
 	/**
 	 * Instantiates a new launch_tug.
-	 *
-	 * @param canalMonitor the canal monitor
-	 * @param lock            the lock
-	 * @param launchSection            the launch section
+	 * 
+	 * @param canalMonitor
+	 *            the canal monitor
+	 * @param lock
+	 *            the lock
+	 * @param launchSection
+	 *            the launch section
 	 */
-	public Launch_tug(CanalMonitor canalMonitor, Lock lock,
-			Section launchSection) {
+	public Launch_tug(Lock lock, Section launchSection) {
 		// TODO Auto-generated constructor stub
 		this.lock = lock;
 		this.launchSection = launchSection;
-		this.canalMonitor = canalMonitor;
 	}
 
 	/*
@@ -47,37 +45,34 @@ public class Launch_tug extends Thread {
 	 */
 	public void launch() {
 
-		synchronized (canalMonitor) {
+		Vessel temp = null;
+		synchronized (lock) {
 
-			// Section launchSection = this.secs.get(0);
-			while (!lock.isOccupied()
-					|| (lock.isOccupied() && lock.getVessel().isOutbound())) {
+			// System.out.println("Launch");
+			// synchronized (lock) {
+			while (lock.getVessel() == null
+					|| (lock.getVessel() != null && lock.getVessel().isOutbound())) {
 				try {
-					canalMonitor.wait();
+					lock.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
-			if (!launchSection.isOccupied()) {
+			temp = lock.leave();
+			lock.notifyAll();
+			System.out.println(temp + " leaves lock.");
+		}
 
-				Vessel temp = lock.leave();
-				System.out.println(temp + " leaves lock.");
-				canalMonitor.notifyAll();
+		try {
+			Thread.sleep(Param.TOWING_TIME);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-				try {
-					 Thread.sleep(Param.TOWING_TIME);
-
-//					Thread.currentThread().join(Param.TOWING_TIME);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				launchSection.enter(temp);
-				canalMonitor.notifyAll();
-			}
+		synchronized (launchSection) {
+			launchSection.enter(temp);
 		}
 	}
 }

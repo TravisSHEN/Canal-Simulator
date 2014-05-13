@@ -9,128 +9,128 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Lock {
 
-	/** The drain. */
-	private boolean occupied, drain;
+    /** The drain. */
+    private volatile boolean occupied, drain;
 
-	/** The count. */
-	protected AtomicInteger count;
+    /** The count. */
+    protected volatile AtomicInteger count;
 
-	// occupied by the vessel;
-	/** The vessel. */
-	private volatile Vessel vessel;
+    // occupied by the vessel;
+    /** The vessel. */
+    private volatile Vessel vessel;
 
-	/**
-	 * Instantiates a new lock.
-	 */
-	public Lock() {
-		this.occupied = false;
-		this.drain = true;
-		this.count = new AtomicInteger(0);
-		this.vessel = null;
-	}
+    /**
+     * Instantiates a new lock.
+     */
+    public Lock() {
+        this.occupied = false;
+        this.drain = true;
+        this.count = new AtomicInteger(0);
+        this.vessel = null;
+    }
 
-	/**
-	 * Checks if is drain.
-	 *
-	 * @return true, if is drain
-	 */
-	public synchronized boolean isDrain() {
-		return drain;
-	}
+    public synchronized void printOutConditions() {
+        // **********************************************//
+        System.out.println("==================== Condition in Lock"
+                + " ====================");
+        System.out.println("Occupied            : " + this.isOccupied());
+        System.out.println("Occupied by Vessel  : " + vessel);
+        System.out.println("Chamber             : "
+                + (this.isDrain() ? "drains" : "fills"));
+        System.out.println("==================== END ====================");
+        // **********************************************//
+    }
 
-	/**
-	 * Sets the drain.
-	 *
-	 * @param drain the new drain
-	 */
-	public void setDrain(boolean drain) {
-		this.drain = drain;
-	}
+    /**
+     * Operate water level. If there is a vessel in lock, check vessel is
+     * outbound or inbound. If it is outbound, lower the water level, otherwise,
+     * fills lock, which takes operate time.
+     */
+    public synchronized void operateWaterLevel() {
+        if (this.vessel != null) {
+            try {
+                Thread.sleep(Param.OPERATE_TIME);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (this.vessel.isOutbound()) {
+                this.setDrain( Param.DRAINED );
+            } else {
+                this.setDrain( Param.UNDRAINED);
+            }
+        }
+    }
 
-	/**
-	 * Checks if is occupied.
-	 *
-	 * @return true, if is occupied
-	 */
-	public synchronized boolean isOccupied() {
-		return occupied;
-	}
+    /**
+     * Enter.
+     * 
+     * @param vessel
+     *            the vessel
+     */
+    public synchronized void enter(Vessel vessel) {
+        // when there is a vessel already in lock,
+        // next incoming vessel has to wait.
+        while (this.isOccupied()) {
+            // while(this.vessel != null){
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        this.setOccupied(Param.OCCUPIED);
+        this.setVessel(vessel);
+        this.notifyAll();
 
-	/**
-	 * Sets the occupied.
-	 *
-	 * @param occupied the new occupied
-	 */
-	public synchronized void setOccupied(boolean occupied) {
-		this.occupied = occupied;
-	}
+    }
 
-	/**
-	 * Gets the vessel.
-	 *
-	 * @return the vessel
-	 */
-	public synchronized Vessel getVessel() {
-		return vessel;
-	}
+    /**
+     * Leave.
+     * 
+     * @return the vessel
+     */
+    public synchronized Vessel leave() {
+        while (!this.isOccupied()) {
+            // while(this.vessel == null){
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        Vessel vessel = (Vessel) this.getVessel().clone();
+        this.setOccupied(Param.UNOCCUPIED);
+        this.setVessel(null);
+        this.notifyAll();
 
-	/**
-	 * Sets the vessel.
-	 *
-	 * @param vessel the new vessel
-	 */
-	public synchronized void setVessel(Vessel vessel) {
-		this.vessel = vessel;
-	}
+        return vessel;
+    }
 
-	/**
-	 * Operate water level.
-	 */
-	public synchronized void operateWaterLevel() {
-		if (this.vessel != null) {
-			try {
-				Thread.sleep(Param.OPERATE_TIME);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (this.vessel.isOutbound()) {
-				this.drain = Param.DRAINED;
-			} else {
-				this.drain = Param.UNDRAINED;
-			}
-		}
-	}
+    public boolean isOccupied() {
+        return occupied;
+    }
 
-	/**
-	 * Enter.
-	 *
-	 * @param vessel the vessel
-	 */
-	public synchronized void enter(Vessel vessel) {
-		this.setOccupied(Param.OCCUPIED);
-		this.setVessel(vessel);
+    public synchronized void setOccupied(boolean occupied) {
+        this.occupied = occupied;
+    }
 
-	}
+    public boolean isDrain() {
+        return drain;
+    }
 
-	/**
-	 * Leave.
-	 *
-	 * @return the vessel
-	 */
-	public synchronized Vessel leave() {
-		Vessel vessel = null;
-		try {
-			vessel = (Vessel) this.getVessel().clone();
-			this.setOccupied(Param.UNOCCUPIED);
-			this.setVessel(null);
+    public synchronized void setDrain(boolean drain) {
+        this.drain = drain;
+    }
 
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public Vessel getVessel() {
+        return vessel;
+    }
 
-		return vessel;
-	}
+    public synchronized void setVessel(Vessel vessel) {
+        this.vessel = vessel;
+    }
 
 }
