@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 // TODO: Auto-generated Javadoc
 /**
  * The Class Operator operates water level when lock is not occupied so that
@@ -7,7 +9,7 @@
 public class Operator extends Thread {
 
     /** The lock. */
-    private Lock lock;
+    private LockInterface lock;
 
     /**
      * Instantiates a new operator.
@@ -38,22 +40,23 @@ public class Operator extends Thread {
      */
     public void operateChamber() {
 
-        while (lock.isOccupied() || !lock.isChamberEnabled())
-            ;
+            if (!lock.isOccupied() && lock.isChamberEnabled()) {
+                boolean temp = lock.isDrain();
+                
+                synchronized (this) {
+                    
+                System.out.print("Chamber automatically operated by Operator: ");
+                lock.setDrain(!temp);
+                }
 
-//        if (!lock.isOccupied()) {
-            boolean temp = lock.isDrain();
-            // takes operateLapse to operate chamber
-            try {
-                Thread.sleep(Param.operateLapse());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                // takes operateLapse to operate chamber
+                try {
+                     Thread.sleep(Param.operateLapse());
+//                    Thread.currentThread().join(Param.operateLapse());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-
-            lock.setDrain(!temp);
-            System.out.println("OPERATOR: Chamber "
-                    + (lock.isDrain() ? "drains" : "fills"));
-//        }
     }
 
 }

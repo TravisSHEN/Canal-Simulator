@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 
 // TODO: Auto-generated Javadoc
@@ -74,6 +76,13 @@ public interface LockInterface {
      * @param vessel the new vessel
      */
     public void setVessel(Vessel vessel);
+    
+    /**
+     * Gets the count.
+     *
+     * @return the count
+     */
+    public int getCount(); 
 
     /**
      * Increment count.

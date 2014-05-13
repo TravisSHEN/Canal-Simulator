@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 // TODO: Auto-generated Javadoc
 /**
@@ -7,7 +9,7 @@
 public class Consumer extends Thread {
 
     /** The lock. */
-    private Lock lock;
+    private LockInterface lock;
 
     /**
      * Instantiates a new consumer.
@@ -52,11 +54,14 @@ public class Consumer extends Thread {
 
             Vessel temp = lock.leave();
             // operate water level to let the vessel go down.
+            System.out.println("Operating chamber to drain to let vessel out.");
             lock.operateWaterLevel();
             // decrement the number of vessels in canal.
             lock.decrementCount();
             System.out.println(temp + " departs the system");
 
+            // enable chamber again
+            lock.setChamberEnabled(true);
             lock.notifyAll();
             // wait departureLapse until next vessel can get out.
             try {

@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 // TODO: Auto-generated Javadoc
 /**
  * A class whose instances are vessels, each with its unique Id.

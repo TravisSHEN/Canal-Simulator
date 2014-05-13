@@ -1,10 +1,12 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Section.
  */
-public class Section {
+public class Section implements SectionInterface{
 
 	/** The section id. */
 	private int id;

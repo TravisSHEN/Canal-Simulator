@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 // TODO: Auto-generated Javadoc
 /**
@@ -11,9 +13,9 @@ public class Tug extends Thread {
     private final int id;
 
     /** The src. */
-    private Section src;
+    private SectionInterface src;
     /** The dest. */
-    private Section dest;
+    private SectionInterface dest;
 
     /**
      * Instantiates a new tug.

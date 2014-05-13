@@ -1,4 +1,3 @@
-
 /**
  * Author: Litao Shen
  */
@@ -8,15 +7,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * The Class Lock.
  */
-public class Lock {
+public class Lock implements LockInterface {
 
     /** The occupied; The drain. */
     private volatile boolean occupied, drain;
-    
+
     /** The chamber enabled. */
     private volatile boolean chamberEnabled;
 
-    /**  The count: used for counting how many vessels in canal. */
+    /** The count: used for counting how many vessels in canal. */
     protected volatile AtomicInteger count;
 
     // occupied by the vessel;
@@ -62,10 +61,13 @@ public class Lock {
                 e.printStackTrace();
             }
             if (this.vessel.isOutbound()) {
-                this.setDrain( Param.DRAINED );
+                this.setDrain(Param.DRAINED);
+//                this.drain = Param.DRAINED;
             } else {
-                this.setDrain( Param.UNDRAINED);
+//                this.drain = Param.UNDRAINED;
+                this.setDrain(Param.UNDRAINED);
             }
+            
         }
     }
 
@@ -95,7 +97,7 @@ public class Lock {
 
     /**
      * Leave: let vessel leaves lock.
-     *
+     * 
      * @return the vessel
      */
     public synchronized Vessel leave() {
@@ -118,7 +120,7 @@ public class Lock {
 
     /**
      * Checks if is occupied.
-     *
+     * 
      * @return true, if is occupied
      */
     public synchronized boolean isOccupied() {
@@ -127,8 +129,9 @@ public class Lock {
 
     /**
      * Sets the occupied.
-     *
-     * @param occupied the new occupied
+     * 
+     * @param occupied
+     *            the new occupied
      */
     public synchronized void setOccupied(boolean occupied) {
         this.occupied = occupied;
@@ -136,7 +139,7 @@ public class Lock {
 
     /**
      * Checks if is drain.
-     *
+     * 
      * @return true, if is drain
      */
     public synchronized boolean isDrain() {
@@ -145,16 +148,18 @@ public class Lock {
 
     /**
      * Sets the drain.
-     *
-     * @param drain the new drain
+     * 
+     * @param drain
+     *            the new drain
      */
     public synchronized void setDrain(boolean drain) {
         this.drain = drain;
+        System.out.println("Chamber " + (this.drain ? "drains" : "fills"));
     }
 
     /**
      * Gets the vessel.
-     *
+     * 
      * @return the vessel
      */
     public synchronized Vessel getVessel() {
@@ -163,8 +168,9 @@ public class Lock {
 
     /**
      * Sets the vessel.
-     *
-     * @param vessel the new vessel
+     * 
+     * @param vessel
+     *            the new vessel
      */
     public synchronized void setVessel(Vessel vessel) {
         this.vessel = vessel;
@@ -172,7 +178,7 @@ public class Lock {
 
     /**
      * Gets the count.
-     *
+     * 
      * @return the count
      */
     public synchronized int getCount() {
@@ -185,7 +191,7 @@ public class Lock {
     public synchronized void incrementCount() {
         this.count.getAndIncrement();
     }
-    
+
     /**
      * Decrement count.
      */
@@ -195,7 +201,7 @@ public class Lock {
 
     /**
      * Checks if is chamber enabled.
-     *
+     * 
      * @return true, if is chamber enabled
      */
     public synchronized boolean isChamberEnabled() {
@@ -204,12 +210,12 @@ public class Lock {
 
     /**
      * Sets the chamber enabled.
-     *
-     * @param chamberEnabled the new chamber enabled
+     * 
+     * @param chamberEnabled
+     *            the new chamber enabled
      */
     public synchronized void setChamberEnabled(boolean chamberEnabled) {
         this.chamberEnabled = chamberEnabled;
     }
-
 
 }

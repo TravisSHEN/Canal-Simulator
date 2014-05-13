@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 // TODO: Auto-generated Javadoc
 /**
@@ -7,16 +9,18 @@
 public class Return_tug extends Thread {
 
     /** The last section. */
-    private Section lastSection;
+    private SectionInterface lastSection;
 
     /** The lock. */
-    private Lock lock;
+    private LockInterface lock;
 
     /**
      * Instantiates a new return_tug.
-     *
-     * @param lastSection            the last section
-     * @param lock            the lock
+     * 
+     * @param lastSection
+     *            the last section
+     * @param lock
+     *            the lock
      */
     public Return_tug(Section lastSection, Lock lock) {
         // TODO Auto-generated constructor stub
@@ -31,7 +35,7 @@ public class Return_tug extends Thread {
      */
     public void run() {
         while (true) {
-            this.returnToLock(lastSection, lock);
+            this.returnToLock((Section) lastSection, (Lock) lock);
         }
     }
 
@@ -52,7 +56,7 @@ public class Return_tug extends Thread {
         // synchronized object lastSection (lock object lastSection).
         synchronized (lastSection) {
             // when lastSection is not occupied by vessel,
-            // let current thread wait until waken up by other thread owns 
+            // let current thread wait until waken up by other thread owns
             // monitor lastSection.
             while (!lastSection.isOccupied()) {
                 try {
@@ -64,7 +68,12 @@ public class Return_tug extends Thread {
 
             // synchronize object lock (lock object lock)
             synchronized (lock) {
-                while (lock.isDrain() || lock.isOccupied()) {
+                // wait for water level of lock to be filled
+                if (lock.isDrain()) {
+                    Thread.yield();
+                    return;
+                }
+                while (lock.isOccupied()) {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
@@ -75,6 +84,7 @@ public class Return_tug extends Thread {
 
                 // vessel leave last section
                 Vessel temp = lastSection.leave();
+                lastSection.notifyAll();
                 // waiting TOWING_TIME to let vessel enters lock.
                 try {
                     Thread.sleep(Param.TOWING_TIME);
@@ -85,6 +95,9 @@ public class Return_tug extends Thread {
                 temp.setOutbound(true);
                 // let vessel enter lock.
                 lock.enter(temp);
+                // disable chamber to run automatically
+                lock.setChamberEnabled(false);
+                lock.notifyAll();
                 System.out.println(temp + " returns to lock to go down.");
             }
         }

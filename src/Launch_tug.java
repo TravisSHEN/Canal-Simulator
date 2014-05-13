@@ -1,4 +1,6 @@
-
+/**
+ * Author: Litao Shen
+ */
 
 // TODO: Auto-generated Javadoc
 /**
@@ -7,10 +9,10 @@
 public class Launch_tug extends Thread {
 
     /** The lock. */
-    private Lock lock;
+    private LockInterface lock;
 
     /** The launch section. */
-    private Section launchSection;
+    private SectionInterface launchSection;
 
     /**
      * Instantiates a new launch_tug.
@@ -70,6 +72,8 @@ public class Launch_tug extends Thread {
 
                 temp = lock.leave();
                 // wake up other threads waiting for object lock.
+                // allowing chamber to run after vessel leaves.
+                lock.setChamberEnabled(true);
                 lock.notifyAll();
                 System.out.println(temp + " leaves lock.");
 
