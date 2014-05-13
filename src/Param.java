@@ -1,5 +1,6 @@
-/*
- * 
+
+/**
+ * Author: Litao Shen
  */
 import java.util.Random;
 

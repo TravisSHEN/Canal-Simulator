@@ -1,10 +1,12 @@
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Section.
  */
 public class Section {
 
-	/** The id. */
+	/** The section id. */
 	private int id;
 
 	/** The occupied. */
@@ -26,6 +28,9 @@ public class Section {
 		this.vessel = null;
 	}
 
+	/**
+	 * Prints out the conditions of section.
+	 */
 	public synchronized void printOutConditions() {
         System.out.println("==================== Condition in Section "
                 + this.getId() + " ====================");
@@ -34,11 +39,11 @@ public class Section {
         System.out.println("Occupied by Vessel: " + vessel);
         System.out.println("==================== END ====================");
 	}
+	
 	/**
-	 * Enter.
-	 * 
-	 * @param vessel
-	 *            the vessel
+	 * Enter: let vessel enter the section.
+	 *
+	 * @param vessel            the vessel
 	 */
 	public synchronized void enter(Vessel vessel) {
 
@@ -49,8 +54,8 @@ public class Section {
 	}
 
 	/**
-	 * Leave.
-	 * 
+	 * Leave: let vessel leave the section.
+	 *
 	 * @return the vessel
 	 */
 	public synchronized Vessel leave() {
@@ -65,22 +70,47 @@ public class Section {
 		return vessel;
 	}
 
-	public boolean isOccupied() {
+	/**
+	 * Checks if is occupied.
+	 *
+	 * @return true, if is occupied
+	 */
+	public synchronized boolean isOccupied() {
 		return occupied;
 	}
 
+	/**
+	 * Sets the occupied.
+	 *
+	 * @param occupied the new occupied
+	 */
 	public synchronized void setOccupied(boolean occupied) {
 		this.occupied = occupied;
 	}
 
-	public Vessel getVessel() {
+	/**
+	 * Gets the vessel.
+	 *
+	 * @return the vessel
+	 */
+	public synchronized Vessel getVessel() {
 		return vessel;
 	}
 
+	/**
+	 * Sets the vessel.
+	 *
+	 * @param vessel the new vessel
+	 */
 	public synchronized void setVessel(Vessel vessel) {
 		this.vessel = vessel;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}

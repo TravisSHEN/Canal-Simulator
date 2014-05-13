@@ -1,6 +1,8 @@
+
 // TODO: Auto-generated Javadoc
 /**
- * The Class Operator.
+ * The Class Operator operates water level when lock is not occupied so that
+ * next coming vessel can enter lock to go up or go down.
  */
 public class Operator extends Thread {
 
@@ -10,8 +12,6 @@ public class Operator extends Thread {
     /**
      * Instantiates a new operator.
      * 
-     * @param canalMonitor
-     *            the canal monitor
      * @param lock
      *            the lock
      */
@@ -38,19 +38,22 @@ public class Operator extends Thread {
      */
     public void operateChamber() {
 
-            if (!lock.isOccupied()) {
-                lock.printOutConditions();
-                boolean temp = lock.isDrain();
-                try {
-                    Thread.sleep(Param.operateLapse());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        while (lock.isOccupied() || !lock.isChamberEnabled())
+            ;
 
-                lock.setDrain(!temp);
-                System.out.println("OPERATOR: Chamber "
-                        + (lock.isDrain() ? "drains" : "fills"));
+//        if (!lock.isOccupied()) {
+            boolean temp = lock.isDrain();
+            // takes operateLapse to operate chamber
+            try {
+                Thread.sleep(Param.operateLapse());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+            lock.setDrain(!temp);
+            System.out.println("OPERATOR: Chamber "
+                    + (lock.isDrain() ? "drains" : "fills"));
+//        }
     }
 
 }

@@ -1,20 +1,23 @@
+
+
 // TODO: Auto-generated Javadoc
 /**
- * The Class Tug.
+ * The Class Tug that is tug boat used to move vessel from current section to
+ * successor section.
  */
 public class Tug extends Thread {
 
     /** The id. */
     private final int id;
 
+    /** The src. */
+    private Section src;
     /** The dest. */
-    private Section src, dest;
+    private Section dest;
 
     /**
      * Instantiates a new tug.
      * 
-     * @param canalMonitor
-     *            the canal monitor
      * @param id
      *            the id
      * @param src
@@ -36,8 +39,10 @@ public class Tug extends Thread {
      */
     public void run() {
 
-        // if destination is not occupied, move vessel to successor section.
         while (true) {
+
+            // if source is occupied and destination is not occupied,
+            // move the vessel in source(src) to successor section(dest).
             synchronized (src) {
                 while (!src.isOccupied()) {
                     try {
@@ -55,7 +60,7 @@ public class Tug extends Thread {
                         }
                     }
                     Vessel temp = src.leave();
-//                    src.notifyAll();
+                    src.notifyAll();
 
                     try {
                         Thread.sleep(Param.TOWING_TIME);
@@ -63,6 +68,7 @@ public class Tug extends Thread {
                         e.printStackTrace();
                     }
                     dest.enter(temp);
+                    dest.notifyAll();
                 }
             }
         }

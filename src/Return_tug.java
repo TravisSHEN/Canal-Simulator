@@ -1,6 +1,8 @@
+
+
 // TODO: Auto-generated Javadoc
 /**
- * The Class Return_tug.
+ * The Class Return_tug moves the vessel from last section back to lock.
  */
 public class Return_tug extends Thread {
 
@@ -12,13 +14,9 @@ public class Return_tug extends Thread {
 
     /**
      * Instantiates a new return_tug.
-     * 
-     * @param canalMonitor
-     *            the canal monitor
-     * @param lastSection
-     *            the last section
-     * @param lock
-     *            the lock
+     *
+     * @param lastSection            the last section
+     * @param lock            the lock
      */
     public Return_tug(Section lastSection, Lock lock) {
         // TODO Auto-generated constructor stub
@@ -51,7 +49,11 @@ public class Return_tug extends Thread {
         // + (lock.isDrain() ? " drains " : "fills") + " | Last Section: "
         // + lastSection.getVessel());
 
+        // synchronized object lastSection (lock object lastSection).
         synchronized (lastSection) {
+            // when lastSection is not occupied by vessel,
+            // let current thread wait until waken up by other thread owns 
+            // monitor lastSection.
             while (!lastSection.isOccupied()) {
                 try {
                     lastSection.wait();
@@ -60,7 +62,7 @@ public class Return_tug extends Thread {
                 }
             }
 
-            // if (!lock.isOccupied() && !lock.isDrain()) {
+            // synchronize object lock (lock object lock)
             synchronized (lock) {
                 while (lock.isDrain() || lock.isOccupied()) {
                     try {

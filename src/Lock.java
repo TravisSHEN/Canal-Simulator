@@ -1,5 +1,6 @@
-/*
- * 
+
+/**
+ * Author: Litao Shen
  */
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,14 +10,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Lock {
 
-    /** The drain. */
+    /** The occupied; The drain. */
     private volatile boolean occupied, drain;
+    
+    /** The chamber enabled. */
+    private volatile boolean chamberEnabled;
 
-    /** The count. */
+    /**  The count: used for counting how many vessels in canal. */
     protected volatile AtomicInteger count;
 
     // occupied by the vessel;
-    /** The vessel. */
+    /** The vessel in lock. */
     private volatile Vessel vessel;
 
     /**
@@ -27,10 +31,13 @@ public class Lock {
         this.drain = true;
         this.count = new AtomicInteger(0);
         this.vessel = null;
+        this.chamberEnabled = false;
     }
 
+    /**
+     * Prints the out conditions.
+     */
     public synchronized void printOutConditions() {
-        // **********************************************//
         System.out.println("==================== Condition in Lock"
                 + " ====================");
         System.out.println("Occupied            : " + this.isOccupied());
@@ -38,7 +45,6 @@ public class Lock {
         System.out.println("Chamber             : "
                 + (this.isDrain() ? "drains" : "fills"));
         System.out.println("==================== END ====================");
-        // **********************************************//
     }
 
     /**
@@ -48,6 +54,7 @@ public class Lock {
      */
     public synchronized void operateWaterLevel() {
         if (this.vessel != null) {
+            // takes OPERATE_TIME to operate chamber to raise/lower water level.
             try {
                 Thread.sleep(Param.OPERATE_TIME);
             } catch (InterruptedException e) {
@@ -63,7 +70,7 @@ public class Lock {
     }
 
     /**
-     * Enter.
+     * Enter: Let vessel enter lock when lock is not occupied.
      * 
      * @param vessel
      *            the vessel
@@ -72,7 +79,6 @@ public class Lock {
         // when there is a vessel already in lock,
         // next incoming vessel has to wait.
         while (this.isOccupied()) {
-            // while(this.vessel != null){
             try {
                 this.wait();
             } catch (InterruptedException e) {
@@ -82,18 +88,19 @@ public class Lock {
         }
         this.setOccupied(Param.OCCUPIED);
         this.setVessel(vessel);
+        // notify all thread waiting for this object changing.
         this.notifyAll();
 
     }
 
     /**
-     * Leave.
-     * 
+     * Leave: let vessel leaves lock.
+     *
      * @return the vessel
      */
     public synchronized Vessel leave() {
+        // when there is no vessel in lock, thread waits until waken up.
         while (!this.isOccupied()) {
-            // while(this.vessel == null){
             try {
                 this.wait();
             } catch (InterruptedException e) {
@@ -109,28 +116,100 @@ public class Lock {
         return vessel;
     }
 
-    public boolean isOccupied() {
+    /**
+     * Checks if is occupied.
+     *
+     * @return true, if is occupied
+     */
+    public synchronized boolean isOccupied() {
         return occupied;
     }
 
+    /**
+     * Sets the occupied.
+     *
+     * @param occupied the new occupied
+     */
     public synchronized void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
-    public boolean isDrain() {
+    /**
+     * Checks if is drain.
+     *
+     * @return true, if is drain
+     */
+    public synchronized boolean isDrain() {
         return drain;
     }
 
+    /**
+     * Sets the drain.
+     *
+     * @param drain the new drain
+     */
     public synchronized void setDrain(boolean drain) {
         this.drain = drain;
     }
 
-    public Vessel getVessel() {
+    /**
+     * Gets the vessel.
+     *
+     * @return the vessel
+     */
+    public synchronized Vessel getVessel() {
         return vessel;
     }
 
+    /**
+     * Sets the vessel.
+     *
+     * @param vessel the new vessel
+     */
     public synchronized void setVessel(Vessel vessel) {
         this.vessel = vessel;
     }
+
+    /**
+     * Gets the count.
+     *
+     * @return the count
+     */
+    public synchronized int getCount() {
+        return count.get();
+    }
+
+    /**
+     * Increment count.
+     */
+    public synchronized void incrementCount() {
+        this.count.getAndIncrement();
+    }
+    
+    /**
+     * Decrement count.
+     */
+    public synchronized void decrementCount() {
+        this.count.getAndDecrement();
+    }
+
+    /**
+     * Checks if is chamber enabled.
+     *
+     * @return true, if is chamber enabled
+     */
+    public synchronized boolean isChamberEnabled() {
+        return chamberEnabled;
+    }
+
+    /**
+     * Sets the chamber enabled.
+     *
+     * @param chamberEnabled the new chamber enabled
+     */
+    public synchronized void setChamberEnabled(boolean chamberEnabled) {
+        this.chamberEnabled = chamberEnabled;
+    }
+
 
 }
