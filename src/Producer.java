@@ -10,7 +10,7 @@
 public class Producer extends Thread {
 
     /** The lock. */
-    private LockInterface lock;
+    private Lock lock;
 
     /**
      * Instantiates a new producer.
@@ -40,12 +40,6 @@ public class Producer extends Thread {
      */
     public void produceVessel() {
         synchronized (lock) {
-            // wait for water level to be drained
-            // only if lock is drain, let new vessel in.
-            if (!lock.isDrain()) {
-                Thread.yield();
-                return;
-            }
             // if lock is occupied or the canal is full, let current thread
             // wait until any vessel gets out of canal.
             while (lock.isOccupied() || lock.getCount() == (Param.SECTIONS)) {
@@ -56,24 +50,27 @@ public class Producer extends Thread {
                     e.printStackTrace();
                 }
             }
-
+            // wait for water level to be drained
+            // only if lock is drain, let new vessel in.
+            if (!lock.isDrain()) {
+                 Thread.yield();
+                return;
+            }
             Vessel temp = Vessel.getNewVessel();
 
             // increment counter.
             lock.incrementCount();
             lock.enter(temp);
-            System.out
-                    .println("Number "
-                            + lock.getCount()
-                            + " vessel "
-                            + lock.getVessel().toString()
-                            + " enter Lock to go up."
-                            + "\nOperating Chamber to fill water: ");
+            System.out.println("+++++\nNumber " + lock.getCount() + " vessel "
+                    + lock.getVessel().toString() + " enter Lock to go up."
+                    + "\nOperating Chamber to fill water: \n+++++");
             // operate water level to raise the vessel.
             lock.operateWaterLevel();
             lock.notifyAll();
             try {
-                Thread.sleep(Param.arrivalLapse());
+                int time = Param.arrivalLapse();
+                System.out.println(time);
+                Thread.sleep(time);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

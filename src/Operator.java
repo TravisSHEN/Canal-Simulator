@@ -9,7 +9,7 @@
 public class Operator extends Thread {
 
     /** The lock. */
-    private LockInterface lock;
+    private Lock lock;
 
     /**
      * Instantiates a new operator.
@@ -40,23 +40,23 @@ public class Operator extends Thread {
      */
     public void operateChamber() {
 
-            if (!lock.isOccupied() && lock.isChamberEnabled()) {
-                boolean temp = lock.isDrain();
-                
-                synchronized (this) {
-                    
-                System.out.print("Chamber automatically operated by Operator: ");
-                lock.setDrain(!temp);
-                }
+        if (!lock.isOccupied() && lock.isChamberEnabled()) {
+            boolean temp = lock.isDrain();
 
-                // takes operateLapse to operate chamber
-                try {
-                     Thread.sleep(Param.operateLapse());
-//                    Thread.currentThread().join(Param.operateLapse());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            synchronized (lock) {
+                String chamber = lock.setDrain(!temp);
+                System.out.println("Chamber by Operator: " + chamber);
+                lock.notifyAll();
             }
+
+            // takes operateLapse to operate chamber
+            try {
+                Thread.sleep(Param.operateLapse());
+                // Thread.currentThread().join(Param.operateLapse());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

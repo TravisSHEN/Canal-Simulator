@@ -9,10 +9,10 @@
 public class Launch_tug extends Thread {
 
     /** The lock. */
-    private LockInterface lock;
+    private Lock lock;
 
     /** The launch section. */
-    private SectionInterface launchSection;
+    private Section launchSection;
 
     /**
      * Instantiates a new launch_tug.

@@ -61,7 +61,7 @@ public interface LockInterface {
      *
      * @param drain the new drain
      */
-    public void setDrain(boolean drain);
+    public String setDrain(boolean drain);
 
     /**
      * Gets the vessel.

@@ -52,6 +52,7 @@ public class Lock implements LockInterface {
      * fills lock, which takes operate time.
      */
     public synchronized void operateWaterLevel() {
+        String chamber;
         if (this.vessel != null) {
             // takes OPERATE_TIME to operate chamber to raise/lower water level.
             try {
@@ -61,13 +62,14 @@ public class Lock implements LockInterface {
                 e.printStackTrace();
             }
             if (this.vessel.isOutbound()) {
-                this.setDrain(Param.DRAINED);
+                chamber = this.setDrain(Param.DRAINED);
 //                this.drain = Param.DRAINED;
             } else {
 //                this.drain = Param.UNDRAINED;
-                this.setDrain(Param.UNDRAINED);
+                chamber = this.setDrain(Param.UNDRAINED);
             }
             
+            System.out.println(chamber);
         }
     }
 
@@ -152,9 +154,10 @@ public class Lock implements LockInterface {
      * @param drain
      *            the new drain
      */
-    public synchronized void setDrain(boolean drain) {
+    public synchronized String setDrain(boolean drain) {
         this.drain = drain;
-        System.out.println("Chamber " + (this.drain ? "drains" : "fills"));
+//        System.out.println("Chamber " + (this.drain ? "drains" : "fills"));
+        return (this.drain ? "Chamber drains" : "Chamber fills");
     }
 
     /**

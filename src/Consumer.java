@@ -9,7 +9,7 @@
 public class Consumer extends Thread {
 
     /** The lock. */
-    private LockInterface lock;
+    private Lock lock;
 
     /**
      * Instantiates a new consumer.
@@ -39,7 +39,7 @@ public class Consumer extends Thread {
      * Depart.
      */
     public void depart() {
-        // lock object lock. 
+        // lock object lock.
         // let thread wait until lock is occupied by a outbound vessel.
         synchronized (lock) {
             while (lock.getVessel() == null
@@ -51,11 +51,11 @@ public class Consumer extends Thread {
                     e.printStackTrace();
                 }
             }
-
+            System.out.println("Let vessel" + lock.getVessel()
+                    + " out. Operating chamber: ");
+            lock.operateWaterLevel();
             Vessel temp = lock.leave();
             // operate water level to let the vessel go down.
-            System.out.println("Operating chamber to drain to let vessel out.");
-            lock.operateWaterLevel();
             // decrement the number of vessels in canal.
             lock.decrementCount();
             System.out.println(temp + " departs the system");

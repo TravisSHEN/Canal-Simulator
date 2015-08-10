@@ -9,10 +9,10 @@
 public class Return_tug extends Thread {
 
     /** The last section. */
-    private SectionInterface lastSection;
+    private Section lastSection;
 
     /** The lock. */
-    private LockInterface lock;
+    private Lock lock;
 
     /**
      * Instantiates a new return_tug.
