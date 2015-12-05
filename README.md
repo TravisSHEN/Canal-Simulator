@@ -1,6 +1,8 @@
 # Canal Simulator
 
-## Introduction
+# Introduction
+
+This project is built for SWEN40004 Assignment 2 in UniMelb 2014-SM1.
 
 This project is to implement a canal simulator which using concurrency
 programming that allowing multiple threads, which operate the lock and every
@@ -10,7 +12,7 @@ This project basically implement the concept of monitor that allowing lock the
 object when one of threads process this object so that other threads have to
 wait in order to process same object.
 
-This project is built for SWEN40004 Assignment 2 in UniMelb 2014-SM1.
+# Intro to System
 
 The system to be simulated is a canal/lock system. The canal is somehow kept at
 the appropriate water level by a mechanism that we don’t worry about. It only
@@ -38,23 +40,33 @@ Hence it is sometimes necessary to fill or drain the chamber even if no vessel
 is in the lock. It is the task of an “operator” to occasionally fill or drain
 the lock chamber like that.
 
-Assume that there is no other vessels in the system, the related operations for
-a vessel in this system can be described as:
+`The related operations for vessels in this system can be described as:`
 
 ![alt
 tag](https://cloud.githubusercontent.com/assets/2654264/11605981/c69928c8-9b63-11e5-871a-93b8528f713a.png)
 
-## How to run
+
+# How to run
 
 * Option1 open eclipse and nevigate to **Main.java**, then click "run" button in eclipse.
 * Option2 using makefile in package __src__ by type in "make" on terminal, and run the
 program by command **java Main**
 
-## Documentation
+# Documentation
 Documentation of this project can be found in __doc__ folder.
 
-## Author 
+# Author 
 
 Litao Shen (litaoshen_0315@hotmail.com)
 
-## Contributions
+# License
+Copyright 2015 litaos.co
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+
